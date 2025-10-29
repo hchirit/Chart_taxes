@@ -72,7 +72,9 @@ function getData() {
     let filters = {
       year: selectedYear
     };
-    items = ExecuteClarityQuery("dash_rashut_pm", ServerName, filters);
+
+    //items = ExecuteClarityQuery("dash_rashut_pm", ServerName, filters);
+    items =allIdea;
     console.log(items);
     return items;
   }
