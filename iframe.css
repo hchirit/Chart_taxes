@@ -1,0 +1,39 @@
+ 
+/*CORE style*/
+ 
+ 
+.ppm-navbar{
+              display:none;
+ 
+}
+ 
+.ppm-header{
+              display:none;
+}
+.action-bar-container {
+              //display:none !important;
+}
+.ppm-workspace.nav-padding {
+              margin-left:0;
+}
+.ppm-project-grid{
+              padding-top:0 !important;
+}
+.ppm-filter-component.filter-bar {
+              display:none;
+}
+.item-actions-bar{
+              display:none;
+}
+.view-select-last{
+              display:none;
+}
+ppm-filter-attribute{
+              display:none;
+}
+.header-row-container{
+              display:none  !important;;
+}
+.m-r-sm{
+              display:none;
+}
