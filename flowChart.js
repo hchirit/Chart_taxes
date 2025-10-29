@@ -95,7 +95,7 @@ mermaid.initialize({
 
 // const generateFlowChart = (async (data) => {
 //     await
-function generateFlowChart(data, selectedYear) {
+async function generateFlowChart(data, selectedYear) {
     // Construct the Mermaid syntax
     let flowSyntax = "graph TB\n"
 flowSyntax += `subgraph Gr GR[משימות בשיתוף שעם ${selectedYear}]\n`
@@ -205,7 +205,7 @@ flowSyntax += `subgraph Gr GR[משימות בשיתוף שעם ${selectedYear}]\
         setTimeout(() => {
             const svgElem = flowchartContainer.querySelector("svg");
 
-            const labels = svgElem.querySelectorAll(".edgeLabel"));
+            const labels = svgElem.querySelectorAll(".edgeLabel");
 
             labels.forEach(label => {
                 const text = label.querySelector("span");
@@ -230,13 +230,14 @@ flowSyntax += `subgraph Gr GR[משימות בשיתוף שעם ${selectedYear}]\
             });
         }, 100);
         //
+      
     } catch (error) {
         flowchartContainer.innerHTML = "Invalid syntax";
         setTimeout(() => {
             addClickEvents();
         }, 100);
     };
-	
+}
 	document.addEventListener("DOMContentLoaded", () => {
     // Generate the chart using data from data.js
     generateFlowChart(flowchartData);
@@ -340,9 +341,8 @@ function showModal(nodeId) {
 	modal.style.display = "block";
 	overlay.style.display = "block";
 }
-	createFilterSquare([yearsFilters], 'flowChart');
 
-	
-	
+
+createFilterSquare([yearsFilters], 'flowChart');
 
 

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סה"ב משימות - רשות המיסים</title>
+    <link rel="stylesheet" href="styles/chart.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>סה"ב משימות - רשות המיסים</h1>
+            <div class="percentage-badge">78% ביצוע כללי</div>
+        </header>
+
+        <div class="chart-container">
+            <canvas id="hierarchyChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Chart.js library -->
+    <script src="Chart.js_3.9.1.js"></script>
+    <script src="chartjs-plugin-datalabels.js"></script>
+
+    <!-- Application modules -->
+    <script src="getDataFromQuery.js"></script>
+    <script src="src/utils/chartConfig.js"></script>
+    <script src="src/data/dataTransformer.js"></script>
+    <script src="src/charts/hierarchicalChart.js"></script>
+    <script src="src/main.js"></script>
+</body>
+</html>
