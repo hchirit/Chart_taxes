@@ -15,85 +15,89 @@ class DataTransformer {
      * @returns {Object} - Structure de données pour le graphique
      */
     transformToHierarchy(rawData, selectedYear) {
-        // Structure des nœuds basée sur ui_demo.png
+        // Calcule les statistiques réelles à partir des données
+        const stats = this.calculateStatistics(rawData, selectedYear);
+        console.log('Statistiques calculées:', stats);
+
+        // Structure des nœuds basée sur les données calculées
         const nodes = [
             {
                 id: 'root',
-                label: '1,496',
+                label: stats.total.toLocaleString('he-IL'),
                 title: 'סה"ב משימות',
                 level: 0,
                 x: 50,
-                y: 10,
+                y: 8,
                 color: '#d6e9f5',
                 borderColor: '#4479ba'
             },
             // Niveau 1 - Gauche (משימות רשות המיסים)
             {
                 id: 'right-branch',
-                label: '906',
+                label: stats.withoutShaam.total.toString(),
                 title: 'משימות רשות המיסים',
-                subtitle: 'שיעור ביצוע: 77%',
+                subtitle: 'שיעור ביצוע: ' + stats.withoutShaam.percentage,
                 level: 1,
-                x: 75,
-                y: 25,
+                x: 72,
+                y: 24,
                 color: '#e8e8e8',
                 borderColor: '#4479ba',
                 showPercentage: true,
-                percentage: '77%'
+                percentage: stats.withoutShaam.percentage
             },
             // Niveau 1 - Droite (משימות בשיתוף שע"מ)
             {
                 id: 'left-branch',
-                label: '590',
+                label: stats.withShaam.total.toString(),
                 title: 'משימות בשיתוף שע"מ',
-                subtitle: 'שיעור ביצוע: 80%',
+                subtitle: 'שיעור ביצוע: ' + stats.withShaam.percentage,
                 level: 1,
-                x: 25,
-                y: 25,
+                x: 28,
+                y: 24,
                 color: '#e8e8e8',
                 borderColor: '#4479ba',
                 showPercentage: true,
-                percentage: '80%'
+                percentage: stats.withShaam.percentage
             },
 
             // Niveau 2 - Branche gauche (משימות רשות המיסים)
             {
                 id: 'right-new',
-                label: '437',
+                label: stats.withoutShaam.new.toString(),
                 title: 'חדשות',
                 level: 2,
-                x: 65,
-                y: 45,
+                x: 60,
+                y: 42,
                 color: '#d2e9ab',
                 borderColor: '#4479ba'
             },
             {
                 id: 'right-continued',
-                label: '167',
+                label: stats.withoutShaam.continued.toString(),
                 title: 'ממשיכות',
                 level: 2,
-                x: 75,
-                y: 45,
+                x: 72,
+                y: 42,
                 color: '#ffd699',
                 borderColor: '#e6a15d'
             },
             {
                 id: 'right-midyear',
-                label: '175',
+                label: stats.withoutShaam.midyear.toString(),
                 title: 'אמצע שנה',
                 level: 2,
-                x: 85,
-                y: 45,
+                x: 84,
+                y: 42,
                 color: '#d6e9f5',
                 borderColor: '#4479ba'
             },
             {
                 id: 'right-cancelled',
-                label: '97',
+                label: stats.withoutShaam.cancelled.toString(),
                 title: 'מבוטלות',
                 level: 2,
-                x: 95,
-                y: 45,
+                x: 94,
+                y: 42,
                 color: '#f4c2d4',
                 borderColor: '#cc7d75'
             },
@@ -101,123 +105,125 @@ class DataTransformer {
             // Niveau 2 - Branche droite (בשיתוף שע"מ)
             {
                 id: 'left-new',
-                label: '395',
+                label: stats.withShaam.new.total.toString(),
                 title: 'חדשות',
                 level: 2,
-                x: 15,
-                y: 45,
+                x: 16,
+                y: 42,
                 color: '#d2e9ab',
                 borderColor: '#4479ba'
             },
             {
                 id: 'left-continued',
-                label: '73',
+                label: stats.withShaam.continued.toString(),
                 title: 'ממשיכות',
                 level: 2,
-                x: 25,
-                y: 45,
+                x: 28,
+                y: 42,
                 color: '#ffd699',
                 borderColor: '#e6a15d'
             },
             {
                 id: 'left-midyear',
-                label: '119',
+                label: stats.withShaam.midyear.total.toString(),
                 title: 'אמצע שנה',
                 level: 2,
-                x: 35,
-                y: 45,
+                x: 40,
+                y: 42,
                 color: '#d6e9f5',
                 borderColor: '#4479ba'
             },
 
-            // Niveau 3 - Sous-nœuds de "חדשות" (gauche droite - 395)
+            // Niveau 3 - Sous-nœuds de "חדשות" (gauche droite - avec shaam)
             {
                 id: 'left-new-approved',
-                label: '75',
+                label: stats.withShaam.new.approved.toString(),
                 title: 'מאושר לביצוע',
                 level: 3,
-                x: 10,
-                y: 65,
+                x: 8,
+                y: 62,
                 color: '#c8e6c9',
                 borderColor: '#4479ba'
             },
             {
                 id: 'left-new-converted',
-                label: '286',
+                label: stats.withShaam.new.converted.toString(),
                 title: 'הומר',
                 level: 3,
-                x: 15,
-                y: 65,
+                x: 16,
+                y: 62,
                 color: '#fff9c4',
                 borderColor: '#4479ba'
             },
             {
                 id: 'left-new-cancelled',
-                label: '34',
+                label: stats.withShaam.new.cancelled.toString(),
                 title: 'מבוטלות',
                 level: 3,
-                x: 20,
-                y: 65,
+                x: 24,
+                y: 62,
                 color: '#f4c2d4',
                 borderColor: '#cc7d75'
             },
 
-            // Niveau 3 - Sous-nœuds de "אמצע שנה" (gauche droite - 119)
+            // Niveau 3 - Sous-nœuds de "אמצע שנה" (gauche droite - avec shaam)
             {
                 id: 'left-midyear-approved',
-                label: '13',
+                label: stats.withShaam.midyear.approved.toString(),
                 title: 'מאושר לביצוע',
                 level: 3,
-                x: 30,
-                y: 65,
+                x: 32,
+                y: 62,
                 color: '#c8e6c9',
                 borderColor: '#4479ba'
             },
             {
                 id: 'left-midyear-converted',
-                label: '104',
+                label: stats.withShaam.midyear.converted.toString(),
                 title: 'הומר',
                 level: 3,
-                x: 35,
-                y: 65,
+                x: 40,
+                y: 62,
                 color: '#fff9c4',
                 borderColor: '#4479ba'
             },
             {
                 id: 'left-midyear-cancelled',
-                label: '2',
+                label: stats.withShaam.midyear.cancelled.toString(),
                 title: 'מבוטלות',
                 level: 3,
-                x: 40,
-                y: 65,
+                x: 48,
+                y: 62,
                 color: '#f4c2d4',
                 borderColor: '#cc7d75'
             },
 
-            // Niveau 4 - Sous-nœuds de "הומר" (286)
+            // Niveau 4 - Sous-nœuds de "הומר" (new)
             {
                 id: 'left-new-converted-executing',
-                label: '242',
+                label: stats.withShaam.new.executing.toString(),
                 title: 'הסתיימו',
                 level: 4,
-                x: 15,
-                y: 85,
+                x: 16,
+                y: 82,
                 color: '#c8e6c9',
                 borderColor: '#4479ba'
             },
 
-            // Niveau 4 - Sous-nœuds de "הומר" (104)
+            // Niveau 4 - Sous-nœuds de "הומר" (midyear)
             {
                 id: 'left-midyear-converted-executing',
-                label: '91',
+                label: stats.withShaam.midyear.executing.toString(),
                 title: 'הסתיימו',
                 level: 4,
-                x: 35,
-                y: 85,
+                x: 40,
+                y: 82,
                 color: '#c8e6c9',
                 borderColor: '#4479ba'
             }
         ];
+
+        console.log('Nodes créés:', nodes.length, nodes);
 
         // Connexions entre les nœuds
         const connections = [
@@ -252,6 +258,122 @@ class DataTransformer {
         ];
 
         return { nodes, connections };
+    }
+
+    /**
+     * Calcule les statistiques à partir des données brutes
+     * @param {Array} rawData - Données brutes
+     * @param {number} selectedYear - Année sélectionnée
+     * @returns {Object} - Statistiques calculées
+     */
+    calculateStatistics(rawData, selectedYear) {
+        if (!rawData || !Array.isArray(rawData)) {
+            return this.getDefaultStatistics();
+        }
+
+        // Filtre par année si nécessaire
+        const filteredData = selectedYear
+            ? rawData.filter(item => item.apro_start_year === selectedYear.toString())
+            : rawData;
+
+        // Total
+        const total = filteredData.length;
+
+        // Division par common_shaam
+        const withShaam = filteredData.filter(item => item.common_shaam === 'true');
+        const withoutShaam = filteredData.filter(item => item.common_shaam === 'false');
+
+        // Calcul des pourcentages de réalisation
+        const shaamCompleted = withShaam.filter(item => item.percent_complete && parseFloat(item.percent_complete) > 0);
+        const shaamAvgCompletion = shaamCompleted.length > 0
+            ? (shaamCompleted.reduce((sum, item) => sum + parseFloat(item.percent_complete || 0), 0) / shaamCompleted.length * 100).toFixed(0)
+            : 0;
+
+        const withoutShaamCompleted = withoutShaam.filter(item => item.status === '8'); // Statut terminé
+        const withoutShaamAvgCompletion = withoutShaam.length > 0
+            ? (withoutShaamCompleted.length / withoutShaam.length * 100).toFixed(0)
+            : 0;
+
+        // Calcul des sous-catégories pour "avec shaam" (common_shaam = true)
+        const shaamNew = withShaam.filter(item => item.statut_idea_changeme === '4' || item.statut_idea_changeme === '1');
+        const shaamContinued = withShaam.filter(item => item.statut_idea_changeme === '2');
+        const shaamMidyear = withShaam.filter(item => item.statut_idea_changeme === '3');
+
+        // Calcul des sous-catégories pour "sans shaam" (common_shaam = false)
+        const withoutShaamNew = withoutShaam.filter(item => item.statut_idea_changeme === '4' || item.statut_idea_changeme === '1');
+        const withoutShaamContinued = withoutShaam.filter(item => item.statut_idea_changeme === '2');
+        const withoutShaamMidyear = withoutShaam.filter(item => item.statut_idea_changeme === '3');
+        const withoutShaamCancelled = withoutShaam.filter(item => item.canceled_year);
+
+        // Sous-niveaux pour "new" avec shaam
+        const shaamNewApproved = shaamNew.filter(item => item.verification_statut === '6');
+        const shaamNewConverted = shaamNew.filter(item => item.status === '8');
+        const shaamNewCancelled = shaamNew.filter(item => item.canceled_year);
+
+        // Sous-niveaux pour "midyear" avec shaam
+        const shaamMidyearApproved = shaamMidyear.filter(item => item.verification_statut === '6');
+        const shaamMidyearConverted = shaamMidyear.filter(item => item.status === '8');
+        const shaamMidyearCancelled = shaamMidyear.filter(item => item.canceled_year);
+
+        // Niveau le plus profond
+        const shaamNewConvertedExecuting = shaamNewConverted.filter(item => item.percent_complete && parseFloat(item.percent_complete) >= 1);
+        const shaamMidyearConvertedExecuting = shaamMidyearConverted.filter(item => item.percent_complete && parseFloat(item.percent_complete) >= 1);
+
+        return {
+            total,
+            withShaam: {
+                total: withShaam.length,
+                percentage: shaamAvgCompletion + '%',
+                new: {
+                    total: shaamNew.length,
+                    approved: shaamNewApproved.length,
+                    converted: shaamNewConverted.length,
+                    cancelled: shaamNewCancelled.length,
+                    executing: shaamNewConvertedExecuting.length
+                },
+                continued: shaamContinued.length,
+                midyear: {
+                    total: shaamMidyear.length,
+                    approved: shaamMidyearApproved.length,
+                    converted: shaamMidyearConverted.length,
+                    cancelled: shaamMidyearCancelled.length,
+                    executing: shaamMidyearConvertedExecuting.length
+                }
+            },
+            withoutShaam: {
+                total: withoutShaam.length,
+                percentage: withoutShaamAvgCompletion + '%',
+                new: withoutShaamNew.length,
+                continued: withoutShaamContinued.length,
+                midyear: withoutShaamMidyear.length,
+                cancelled: withoutShaamCancelled.length
+            }
+        };
+    }
+
+    /**
+     * Retourne des statistiques par défaut si pas de données
+     * @returns {Object} - Statistiques par défaut
+     */
+    getDefaultStatistics() {
+        return {
+            total: 1496,
+            withShaam: {
+                total: 590,
+                percentage: '80%',
+                new: { total: 395, approved: 75, converted: 286, cancelled: 34, executing: 242 },
+                continued: 73,
+                midyear: { total: 119, approved: 13, converted: 104, cancelled: 2, executing: 91 }
+            },
+            withoutShaam: {
+                total: 906,
+                percentage: '77%',
+                new: 437,
+                continued: 167,
+                midyear: 175,
+                cancelled: 97
+            }
+        };
     }
 
     /**

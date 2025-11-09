@@ -22,6 +22,20 @@
     <script src="Chart.js_3.9.1.js"></script>
     <script src="chartjs-plugin-datalabels.js"></script>
 
+    <!-- Enregistre le plugin datalabels -->
+    <script>
+        // Vérifie que Chart.js et le plugin sont chargés
+        if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
+            Chart.register(ChartDataLabels);
+            console.log('✓ Plugin datalabels enregistré avec succès');
+        } else {
+            console.error('❌ Erreur: Chart.js ou plugin datalabels non trouvé');
+        }
+    </script>
+
+    <!-- Data source -->
+    <script src="data.js"></script>
+
     <!-- Application modules -->
     <script src="getDataFromQuery.js"></script>
     <script src="src/utils/chartConfig.js"></script>

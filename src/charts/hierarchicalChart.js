@@ -36,66 +36,52 @@ class HierarchicalChart {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        top: 40,
+                        right: 100,
+                        bottom: 40,
+                        left: 100
+                    }
+                },
                 plugins: {
                     legend: {
                         display: false
                     },
                     tooltip: {
-                        enabled: false
+                        enabled: true,
+                        backgroundColor: 'rgba(0, 27, 91, 0.9)',
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                const node = context.dataset.data[0].nodeData;
+                                return node.title ? `${node.title}: ${node.label}` : node.label;
+                            }
+                        }
                     },
                     datalabels: {
-                        display: true,
-                        align: 'center',
-                        anchor: 'center',
-                        backgroundColor: function(context) {
-                            const dataIndex = context.dataIndex;
-                            const node = hierarchyData.nodes[dataIndex];
-                            return node ? node.color : '#ffffff';
-                        },
-                        borderColor: function(context) {
-                            const dataIndex = context.dataIndex;
-                            const node = hierarchyData.nodes[dataIndex];
-                            return node ? node.borderColor : '#4479ba';
-                        },
-                        borderWidth: 2,
-                        borderRadius: 8,
-                        color: '#001B5B',
-                        font: {
-                            size: 16,
-                            weight: 'bold',
-                            family: 'Arial'
-                        },
-                        padding: {
-                            top: 12,
-                            bottom: 12,
-                            left: 20,
-                            right: 20
-                        },
-                        formatter: function(value, context) {
-                            const dataIndex = context.dataIndex;
-                            const node = hierarchyData.nodes[dataIndex];
-                            if (!node) return '';
-
-                            let text = node.label;
-                            if (node.title) {
-                                text = node.title + '\n' + node.label;
-                            }
-
-                            return text;
-                        }
+                        // Configuration par défaut (sera surchargée par les datasets individuels)
+                        display: true
                     }
                 },
                 scales: {
                     x: {
                         display: false,
                         min: 0,
-                        max: 100
+                        max: 100,
+                        grid: {
+                            display: false
+                        }
                     },
                     y: {
                         display: false,
                         min: 0,
                         max: 100,
-                        reverse: true  // Pour que le root soit en haut
+                        reverse: true,  // Pour que le root soit en haut
+                        grid: {
+                            display: false
+                        }
                     }
                 },
                 animation: {
@@ -105,7 +91,7 @@ class HierarchicalChart {
             },
             plugins: [{
                 id: 'connectionLines',
-                afterDatasetsDraw: (chart) => {
+                beforeDatasetsDraw: (chart) => {
                     this.drawConnections(chart);
                 }
             }, {
@@ -126,19 +112,50 @@ class HierarchicalChart {
      * @returns {Array} - Datasets pour Chart.js
      */
     prepareDatasets(hierarchyData) {
-        const points = hierarchyData.nodes.map(node => ({
-            x: node.x,
-            y: node.y
+        // Crée un dataset pour chaque node afin que datalabels fonctionne correctement
+        return hierarchyData.nodes.map((node, index) => ({
+            label: node.id,
+            data: [{
+                x: node.x,
+                y: node.y,
+                nodeData: node // Stocke les données du node
+            }],
+            backgroundColor: node.color || '#e8e8e8',
+            borderColor: node.borderColor || '#4479ba',
+            borderWidth: 3,
+            pointRadius: 40, // Taille visible du point
+            pointHoverRadius: 45,
+            pointStyle: 'rect', // Style rectangulaire
+            datalabels: {
+                display: true,
+                backgroundColor: node.color || '#e8e8e8',
+                borderColor: node.borderColor || '#4479ba',
+                borderWidth: 2,
+                borderRadius: 8,
+                color: '#001B5B',
+                font: {
+                    size: 14,
+                    weight: 'bold',
+                    family: 'Arial'
+                },
+                padding: {
+                    top: 10,
+                    bottom: 10,
+                    left: 18,
+                    right: 18
+                },
+                align: 'center',
+                anchor: 'center',
+                formatter: function(value, context) {
+                    // Accède aux données du node
+                    const nodeData = context.dataset.data[0].nodeData;
+                    if (nodeData.title) {
+                        return [nodeData.title, nodeData.label];
+                    }
+                    return nodeData.label;
+                }
+            }
         }));
-
-        return [{
-            label: 'Nodes',
-            data: points,
-            backgroundColor: 'transparent',
-            borderColor: 'transparent',
-            pointRadius: 0,
-            pointHoverRadius: 0
-        }];
     }
 
     /**
@@ -147,7 +164,6 @@ class HierarchicalChart {
      */
     drawConnections(chart) {
         const ctx = chart.ctx;
-        const meta = chart.getDatasetMeta(0);
 
         ctx.save();
         ctx.strokeStyle = '#4479ba';
@@ -159,17 +175,20 @@ class HierarchicalChart {
 
             if (!fromNode || !toNode) return;
 
-            const fromPoint = meta.data.find(point => {
-                const dataIndex = point.index;
-                return this.data.nodes[dataIndex]?.id === connection.from;
-            });
+            // Trouve les index des nodes
+            const fromIndex = this.data.nodes.findIndex(n => n.id === connection.from);
+            const toIndex = this.data.nodes.findIndex(n => n.id === connection.to);
 
-            const toPoint = meta.data.find(point => {
-                const dataIndex = point.index;
-                return this.data.nodes[dataIndex]?.id === connection.to;
-            });
+            if (fromIndex === -1 || toIndex === -1) return;
 
-            if (!fromPoint || !toPoint) return;
+            // Récupère les métadonnées des datasets correspondants
+            const fromMeta = chart.getDatasetMeta(fromIndex);
+            const toMeta = chart.getDatasetMeta(toIndex);
+
+            if (!fromMeta || !toMeta || !fromMeta.data[0] || !toMeta.data[0]) return;
+
+            const fromPoint = fromMeta.data[0];
+            const toPoint = toMeta.data[0];
 
             // Dessine la ligne
             ctx.beginPath();
@@ -197,15 +216,17 @@ class HierarchicalChart {
      */
     drawPercentageBadges(chart) {
         const ctx = chart.ctx;
-        const meta = chart.getDatasetMeta(0);
 
         ctx.save();
 
         this.data.nodes.forEach((node, index) => {
             if (!node.showPercentage) return;
 
-            const point = meta.data[index];
-            if (!point) return;
+            // Récupère les métadonnées du dataset correspondant
+            const meta = chart.getDatasetMeta(index);
+            if (!meta || !meta.data[0]) return;
+
+            const point = meta.data[0];
 
             // Position du badge (au-dessus à droite du nœud)
             const badgeX = point.x + 60;

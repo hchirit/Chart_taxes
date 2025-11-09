@@ -37,7 +37,7 @@
             // Récupère les données depuis le serveur
             // Utilise la fonction ExecuteClarityQuery de getDataFromQuery.js
 
-            // Pour la démo, utilise des données de test
+            // Pour la démo, utilise les données de data.js
             // Dans la vraie application, décommentez les lignes suivantes:
             /*
             const url = window.document.URL;
@@ -46,8 +46,14 @@
             rawData = ExecuteClarityQuery("dash_rashut_pm", serverName, filters);
             */
 
-            // Données de test (correspond à ui_demo.png)
-            rawData = generateTestData();
+            // Utilise les données de data.js (variable globale allIdea)
+            if (typeof allIdea !== 'undefined') {
+                rawData = allIdea;
+                console.log('Données chargées depuis data.js:', rawData.length, 'enregistrements');
+            } else {
+                console.warn('Variable allIdea non trouvée, utilisation de données de test');
+                rawData = generateTestData();
+            }
 
             console.log('Données chargées:', rawData);
 
