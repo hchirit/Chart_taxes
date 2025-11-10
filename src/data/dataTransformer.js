@@ -24,7 +24,7 @@ class DataTransformer {
             {
                 id: 'root',
                 label: stats.total.toLocaleString('he-IL'),
-                title: 'סה"ב משימות',
+                title: 'סה"כ משימות',
                 level: 0,
                 x: 50,
                 y: 8,
