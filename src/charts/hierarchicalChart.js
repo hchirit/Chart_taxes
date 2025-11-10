@@ -1,6 +1,6 @@
 /**
- * Module de rendu du graphique hiérarchique avec Chart.js
- * Utilise un graphique de type scatter avec des lignes personnalisées
+ * Hierarchical chart rendering module using Chart.js
+ * Uses a scatter chart type with custom lines
  */
 
 class HierarchicalChart {
@@ -13,21 +13,21 @@ class HierarchicalChart {
     }
 
     /**
-     * Initialise et affiche le graphique
-     * @param {Object} hierarchyData - Données transformées (nodes + connections)
+     * Initializes and displays the chart
+     * @param {Object} hierarchyData - Transformed data (nodes + connections)
      */
     render(hierarchyData) {
         this.data = hierarchyData;
 
-        // Détruit le graphique existant si présent
+        // Destroy existing chart if present
         if (this.chart) {
             this.chart.destroy();
         }
 
-        // Prépare les datasets pour Chart.js
+        // Prepare datasets for Chart.js
         const datasets = this.prepareDatasets(hierarchyData);
 
-        // Configuration du graphique
+        // Chart configuration
         const chartConfig = {
             type: 'scatter',
             data: {
@@ -38,10 +38,10 @@ class HierarchicalChart {
                 maintainAspectRatio: false,
                 layout: {
                     padding: {
-                        top: 40,
-                        right: 100,
+                        top: 80, // Increased for percentage badges
+                        right: 120,
                         bottom: 40,
-                        left: 100
+                        left: 120
                     }
                 },
                 plugins: {
@@ -51,8 +51,15 @@ class HierarchicalChart {
                     tooltip: {
                         enabled: true,
                         backgroundColor: 'rgba(0, 27, 91, 0.9)',
-                        padding: 12,
+                        padding: 15,
                         cornerRadius: 8,
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
                         callbacks: {
                             label: function(context) {
                                 const node = context.dataset.data[0].nodeData;
@@ -61,8 +68,18 @@ class HierarchicalChart {
                         }
                     },
                     datalabels: {
-                        // Configuration par défaut (sera surchargée par les datasets individuels)
-                        display: true
+                        // Default configuration (will be overridden by individual datasets)
+                        display: true,
+                        // Enable 'listeners' mode so labels are clickable/hoverable
+                        listeners: {
+                            enter: function(context) {
+                                // Change cursor on hover
+                                context.chart.canvas.style.cursor = 'pointer';
+                            },
+                            leave: function(context) {
+                                context.chart.canvas.style.cursor = 'default';
+                            }
+                        }
                     }
                 },
                 scales: {
@@ -78,7 +95,7 @@ class HierarchicalChart {
                         display: false,
                         min: 0,
                         max: 100,
-                        reverse: true,  // Pour que le root soit en haut
+                        reverse: true,  // So the root is at the top
                         grid: {
                             display: false
                         }
@@ -102,52 +119,53 @@ class HierarchicalChart {
             }]
         };
 
-        // Crée le graphique
+        // Create the chart
         this.chart = new Chart(this.ctx, chartConfig);
     }
 
     /**
-     * Prépare les datasets pour Chart.js
-     * @param {Object} hierarchyData - Données de la hiérarchie
-     * @returns {Array} - Datasets pour Chart.js
+     * Prepares datasets for Chart.js
+     * @param {Object} hierarchyData - Hierarchy data
+     * @returns {Array} - Datasets for Chart.js
      */
     prepareDatasets(hierarchyData) {
-        // Crée un dataset pour chaque node afin que datalabels fonctionne correctement
+        // Create a dataset for each node so datalabels works correctly
         return hierarchyData.nodes.map((node, index) => ({
             label: node.id,
             data: [{
                 x: node.x,
                 y: node.y,
-                nodeData: node // Stocke les données du node
+                nodeData: node // Store node data
             }],
-            backgroundColor: node.color || '#e8e8e8',
-            borderColor: node.borderColor || '#4479ba',
-            borderWidth: 3,
-            pointRadius: 40, // Taille visible du point
-            pointHoverRadius: 45,
-            pointStyle: 'rect', // Style rectangulaire
+            backgroundColor: 'transparent', // Make the point invisible
+            borderColor: 'transparent',
+            borderWidth: 0,
+            pointRadius: 0, // Invisible point - only datalabels will be visible
+            pointHoverRadius: 0,
+            pointStyle: 'rect',
             datalabels: {
                 display: true,
                 backgroundColor: node.color || '#e8e8e8',
                 borderColor: node.borderColor || '#4479ba',
-                borderWidth: 2,
+                borderWidth: 3,
                 borderRadius: 8,
                 color: '#001B5B',
                 font: {
-                    size: 14,
+                    size: 15,
                     weight: 'bold',
                     family: 'Arial'
                 },
                 padding: {
-                    top: 10,
-                    bottom: 10,
-                    left: 18,
-                    right: 18
+                    top: 18,
+                    bottom: 18,
+                    left: 25,
+                    right: 25
                 },
                 align: 'center',
                 anchor: 'center',
+                textAlign: 'center',
                 formatter: function(value, context) {
-                    // Accède aux données du node
+                    // Access node data
                     const nodeData = context.dataset.data[0].nodeData;
                     if (nodeData.title) {
                         return [nodeData.title, nodeData.label];
@@ -159,8 +177,8 @@ class HierarchicalChart {
     }
 
     /**
-     * Dessine les lignes de connexion entre les nœuds
-     * @param {Chart} chart - Instance du graphique Chart.js
+     * Draws connection lines between nodes
+     * @param {Chart} chart - Chart.js instance
      */
     drawConnections(chart) {
         const ctx = chart.ctx;
@@ -175,13 +193,13 @@ class HierarchicalChart {
 
             if (!fromNode || !toNode) return;
 
-            // Trouve les index des nodes
+            // Find node indexes
             const fromIndex = this.data.nodes.findIndex(n => n.id === connection.from);
             const toIndex = this.data.nodes.findIndex(n => n.id === connection.to);
 
             if (fromIndex === -1 || toIndex === -1) return;
 
-            // Récupère les métadonnées des datasets correspondants
+            // Get metadata from corresponding datasets
             const fromMeta = chart.getDatasetMeta(fromIndex);
             const toMeta = chart.getDatasetMeta(toIndex);
 
@@ -190,11 +208,11 @@ class HierarchicalChart {
             const fromPoint = fromMeta.data[0];
             const toPoint = toMeta.data[0];
 
-            // Dessine la ligne
+            // Draw the line
             ctx.beginPath();
             ctx.moveTo(fromPoint.x, fromPoint.y);
 
-            // Ligne verticale puis horizontale (style flowchart)
+            // Vertical then horizontal line (flowchart style)
             if (fromNode.level < toNode.level) {
                 const midY = (fromPoint.y + toPoint.y) / 2;
                 ctx.lineTo(fromPoint.x, midY);
@@ -211,8 +229,8 @@ class HierarchicalChart {
     }
 
     /**
-     * Dessine les badges de pourcentage
-     * @param {Chart} chart - Instance du graphique Chart.js
+     * Draws percentage badges
+     * @param {Chart} chart - Chart.js instance
      */
     drawPercentageBadges(chart) {
         const ctx = chart.ctx;
@@ -222,54 +240,54 @@ class HierarchicalChart {
         this.data.nodes.forEach((node, index) => {
             if (!node.showPercentage) return;
 
-            // Récupère les métadonnées du dataset correspondant
+            // Get metadata from corresponding dataset
             const meta = chart.getDatasetMeta(index);
             if (!meta || !meta.data[0]) return;
 
             const point = meta.data[0];
 
-            // Position du badge (au-dessus à droite du nœud)
-            const badgeX = point.x + 60;
-            const badgeY = point.y - 30;
+            // Badge position (above and to the right of the node, higher for better visibility)
+            const badgeX = point.x;
+            const badgeY = point.y - 60; // Moved higher (was -30)
 
-            // Dessine le fond du badge
+            // Draw badge background
             ctx.fillStyle = '#ffe6e6';
             ctx.strokeStyle = '#cc7d75';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 2.5;
 
-            const badgeWidth = 70;
-            const badgeHeight = 35;
-            const radius = 17;
+            const badgeWidth = 100;
+            const badgeHeight = 38;
+            const radius = 19;
 
             ctx.beginPath();
             ctx.roundRect(badgeX - badgeWidth/2, badgeY - badgeHeight/2, badgeWidth, badgeHeight, radius);
             ctx.fill();
             ctx.stroke();
 
-            // Dessine le texte du badge
+            // Draw badge text
             ctx.fillStyle = '#d32f2f';
-            ctx.font = 'bold 14px Arial';
+            ctx.font = 'bold 13px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
             ctx.fillText('שיעור ביצוע:', badgeX, badgeY - 8);
-            ctx.font = 'bold 16px Arial';
-            ctx.fillText(node.percentage, badgeX, badgeY + 8);
+            ctx.font = 'bold 17px Arial';
+            ctx.fillText(node.percentage, badgeX, badgeY + 9);
         });
 
         ctx.restore();
     }
 
     /**
-     * Met à jour le graphique avec de nouvelles données
-     * @param {Object} hierarchyData - Nouvelles données
+     * Updates the chart with new data
+     * @param {Object} hierarchyData - New data
      */
     update(hierarchyData) {
         this.render(hierarchyData);
     }
 
     /**
-     * Détruit le graphique
+     * Destroys the chart
      */
     destroy() {
         if (this.chart) {
@@ -279,5 +297,5 @@ class HierarchicalChart {
     }
 }
 
-// Export pour utilisation dans d'autres modules
+// Export for use in other modules
 window.HierarchicalChart = HierarchicalChart;

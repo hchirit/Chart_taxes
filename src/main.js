@@ -1,44 +1,44 @@
 /**
- * Point d'entrée principal de l'application
- * Orchestre l'initialisation et la mise à jour du graphique
+ * Main application entry point
+ * Orchestrates chart initialization and updates
  */
 
 (function() {
     'use strict';
 
-    // Variables globales
+    // Global variables
     let hierarchyChart = null;
     let dataTransformer = null;
     let selectedYear = 2025;
     let rawData = null;
 
     /**
-     * Initialise l'application
+     * Initializes the application
      */
     function init() {
         console.log('Initialisation de l\'application...');
 
-        // Crée les instances des modules
+        // Create module instances
         dataTransformer = new DataTransformer();
         hierarchyChart = new HierarchicalChart('hierarchyChart');
 
-        // Charge les données
+        // Load data
         loadData();
 
-        // Configure les événements
+        // Setup events
         setupEventListeners();
     }
 
     /**
-     * Charge les données depuis getDataFromQuery
+     * Loads data from getDataFromQuery
      */
     function loadData() {
         try {
-            // Récupère les données depuis le serveur
-            // Utilise la fonction ExecuteClarityQuery de getDataFromQuery.js
+            // Fetch data from server
+            // Uses ExecuteClarityQuery function from getDataFromQuery.js
 
-            // Pour la démo, utilise les données de data.js
-            // Dans la vraie application, décommentez les lignes suivantes:
+            // For demo, use data from data.js
+            // In production, uncomment the following lines:
             /*
             const url = window.document.URL;
             const serverName = url.substring(0, url.indexOf("niku/") - 1);
@@ -46,7 +46,7 @@
             rawData = ExecuteClarityQuery("dash_rashut_pm", serverName, filters);
             */
 
-            // Utilise les données de data.js (variable globale allIdea)
+            // Use data from data.js (global variable allIdea)
             if (typeof allIdea !== 'undefined') {
                 rawData = allIdea;
                 console.log('Données chargées depuis data.js:', rawData.length, 'enregistrements');
@@ -57,7 +57,7 @@
 
             console.log('Données chargées:', rawData);
 
-            // Transforme et affiche les données
+            // Transform and display data
             renderChart();
 
         } catch (error) {
@@ -67,16 +67,16 @@
     }
 
     /**
-     * Transforme les données et affiche le graphique
+     * Transforms data and displays the chart
      */
     function renderChart() {
         try {
-            // Transforme les données brutes en structure hiérarchique
+            // Transform raw data into hierarchical structure
             const hierarchyData = dataTransformer.transformToHierarchy(rawData, selectedYear);
 
             console.log('Données transformées:', hierarchyData);
 
-            // Affiche le graphique
+            // Display the chart
             hierarchyChart.render(hierarchyData);
 
             console.log('Graphique affiché avec succès');
@@ -88,17 +88,17 @@
     }
 
     /**
-     * Configure les écouteurs d'événements
+     * Sets up event listeners
      */
     function setupEventListeners() {
-        // Écoute les changements d'année (si vous ajoutez un filtre)
+        // Listen for year changes (if you add a filter)
         document.addEventListener('filterSelected', function(event) {
             selectedYear = parseInt(event.detail.year, 10);
             console.log('Année sélectionnée:', selectedYear);
             loadData();
         });
 
-        // Écoute le redimensionnement de la fenêtre
+        // Listen for window resize
         let resizeTimeout;
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimeout);
@@ -111,21 +111,21 @@
     }
 
     /**
-     * Génère des données de test pour la démo
-     * @returns {Array} Données de test
+     * Generates test data for demo
+     * @returns {Array} Test data
      */
     function generateTestData() {
-        // Données fictives qui correspondent aux valeurs de ui_demo.png
+        // Fake data matching ui_demo.png values
         return [
             { id: 1, common_shaam: 'true', apro_start_year: 2025, statut_idea_changeme: '4', status: '8', start: '2025-01-01' },
             { id: 2, common_shaam: 'false', apro_start_year: 2025, statut_idea_changeme: '3', status: '1', start: '2025-02-01' },
-            // ... autres données
+            // ... other data
         ];
     }
 
     /**
-     * Affiche un message d'erreur
-     * @param {string} message - Message d'erreur
+     * Displays an error message
+     * @param {string} message - Error message
      */
     function showError(message) {
         const container = document.querySelector('.chart-container');
@@ -140,8 +140,8 @@
     }
 
     /**
-     * Fonction publique pour mettre à jour le graphique
-     * @param {number} year - Année à afficher
+     * Public function to update the chart
+     * @param {number} year - Year to display
      */
     window.updateChart = function(year) {
         selectedYear = year;
@@ -149,13 +149,13 @@
     };
 
     /**
-     * Fonction publique pour rafraîchir le graphique
+     * Public function to refresh the chart
      */
     window.refreshChart = function() {
         loadData();
     };
 
-    // Démarre l'application quand le DOM est prêt
+    // Start application when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

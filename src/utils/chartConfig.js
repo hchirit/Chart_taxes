@@ -1,9 +1,9 @@
 /**
- * Configuration commune pour tous les graphiques Chart.js
+ * Common configuration for all Chart.js charts
  */
 
 const ChartConfig = {
-    // Couleurs par défaut pour les différents types de nœuds
+    // Default colors for different node types
     colors: {
         new: {
             background: '#d2e9ab',
@@ -35,7 +35,7 @@ const ChartConfig = {
         }
     },
 
-    // Configuration des polices
+    // Font configuration
     fonts: {
         main: {
             family: 'Arial, sans-serif',
@@ -57,13 +57,13 @@ const ChartConfig = {
         }
     },
 
-    // Configuration des animations
+    // Animation configuration
     animation: {
         duration: 800,
         easing: 'easeInOutQuart'
     },
 
-    // Configuration par défaut pour Chart.js
+    // Default Chart.js configuration
     defaults: {
         responsive: true,
         maintainAspectRatio: false,
@@ -91,12 +91,12 @@ const ChartConfig = {
         }
     },
 
-    // Helper pour obtenir une couleur selon le type
+    // Helper to get color by type
     getColor(type) {
         return this.colors[type] || this.colors.default;
     },
 
-    // Helper pour formater un nombre
+    // Helper to format a number
     formatNumber(num) {
         if (num >= 1000) {
             return (num / 1000).toFixed(1) + 'K';
@@ -104,11 +104,11 @@ const ChartConfig = {
         return num.toString();
     },
 
-    // Helper pour formater un pourcentage
+    // Helper to format a percentage
     formatPercentage(value) {
         return parseFloat(value).toFixed(2) + '%';
     }
 };
 
-// Export pour utilisation dans d'autres modules
+// Export for use in other modules
 window.ChartConfig = ChartConfig;
