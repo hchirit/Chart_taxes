@@ -8,9 +8,71 @@
 </head>
 <body>
     <div class="container">
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <div class="filters-container">
+                <div class="filter-group">
+                    <label for="yearFilter" class="filter-label">שנה</label>
+                    <select id="yearFilter" class="filter-select">
+                        <option value="">בחר שנה</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="obsFilter" class="filter-label">OBS</label>
+                    <select id="obsFilter" class="filter-select">
+                        <option value="">בחר OBS</option>
+                        <option value="obs1">OBS 1</option>
+                        <option value="obs2">OBS 2</option>
+                        <option value="obs3">OBS 3</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="taskUpdatesFilter" class="filter-label">עדכונים במשימה</label>
+                    <select id="taskUpdatesFilter" class="filter-select">
+                        <option value="">בחר עדכון</option>
+                        <option value="update1">עדכון 1</option>
+                        <option value="update2">עדכון 2</option>
+                        <option value="update3">עדכון 3</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="responsibleFilter" class="filter-label">גורם אחראי</label>
+                    <select id="responsibleFilter" class="filter-select">
+                        <option value="">בחר גורם אחראי</option>
+                        <option value="resp1">גורם 1</option>
+                        <option value="resp2">גורם 2</option>
+                        <option value="resp3">גורם 3</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
         <header>
             <h1>סה"כ משימות - רשות המיסים</h1>
-            <div class="percentage-badge">78% ביצוע כללי</div>
+            <div class="badges-container">
+                <div class="percentage-badge badge-primary">
+                    <span class="badge-label">ביצוע כללי</span>
+                    <span class="badge-value">1%</span>
+                </div>
+                <div class="percentage-badge badge-secondary">
+                    <span class="badge-label">ביצוע פרויקטים שהומרו</span>
+                    <span class="badge-value">1%</span>
+                </div>
+                <div class="percentage-badge badge-tertiary">
+                    <span class="badge-label">ביצוע שנתי</span>
+                    <span class="badge-value">1%</span>
+                </div>
+                <div class="percentage-badge badge-quaternary">
+                    <span class="badge-label">ביצוע שלישוני</span>
+                    <span class="badge-value">1%</span>
+                </div>
+            </div>
         </header>
 
         <div class="chart-container">
@@ -38,6 +100,7 @@
 
     <!-- Application modules -->
     <script src="getDataFromQuery.js"></script>
+    <script src="src/filters/filterManager.js"></script>
     <script src="src/utils/chartConfig.js"></script>
     <script src="src/data/dataTransformer.js"></script>
     <script src="src/charts/hierarchicalChart.js"></script>

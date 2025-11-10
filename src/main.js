@@ -79,11 +79,56 @@
             // Display the chart
             hierarchyChart.render(hierarchyData);
 
+            // Update header badges with calculated statistics
+            updateHeaderBadges();
+
             console.log('Graphique affiché avec succès');
 
         } catch (error) {
             console.error('Erreur lors du rendu du graphique:', error);
             showError('Erreur lors du rendu du graphique');
+        }
+    }
+
+    /**
+     * Updates the header badges with dynamic data
+     */
+    function updateHeaderBadges() {
+        // Calculate statistics from the current data
+        const stats = dataTransformer.calculateStatistics(rawData, selectedYear);
+
+        // Update each badge value
+        const badges = {
+            primary: document.querySelector('.badge-primary .badge-value'),
+            secondary: document.querySelector('.badge-secondary .badge-value'),
+            tertiary: document.querySelector('.badge-tertiary .badge-value'),
+            quaternary: document.querySelector('.badge-quaternary .badge-value')
+        };
+
+        if (badges.primary) {
+            // General completion - average of both branches
+            const generalCompletion = Math.round(
+                (parseFloat(stats.withShaam.percentage) + parseFloat(stats.withoutShaam.percentage)) / 2
+            );
+            badges.primary.textContent = generalCompletion + '%';
+        }
+
+        if (badges.secondary && stats.withShaam.new.converted > 0) {
+            // Converted projects completion
+            const convertedCompletion = Math.round(
+                (stats.withShaam.new.executing / stats.withShaam.new.converted) * 100
+            );
+            badges.secondary.textContent = convertedCompletion + '%';
+        }
+
+        if (badges.tertiary) {
+            // Annual completion - without shaam percentage
+            badges.tertiary.textContent = stats.withoutShaam.percentage;
+        }
+
+        if (badges.quaternary) {
+            // Quarterly completion - with shaam percentage
+            badges.quaternary.textContent = stats.withShaam.percentage;
         }
     }
 
@@ -153,6 +198,29 @@
      */
     window.refreshChart = function() {
         loadData();
+    };
+
+    /**
+     * Public function to update badges with custom values
+     * @param {Object} values - Object with badge values { primary, secondary, tertiary, quaternary }
+     */
+    window.updateBadges = function(values) {
+        if (values.primary !== undefined) {
+            const badge = document.querySelector('.badge-primary .badge-value');
+            if (badge) badge.textContent = values.primary + '%';
+        }
+        if (values.secondary !== undefined) {
+            const badge = document.querySelector('.badge-secondary .badge-value');
+            if (badge) badge.textContent = values.secondary + '%';
+        }
+        if (values.tertiary !== undefined) {
+            const badge = document.querySelector('.badge-tertiary .badge-value');
+            if (badge) badge.textContent = values.tertiary + '%';
+        }
+        if (values.quaternary !== undefined) {
+            const badge = document.querySelector('.badge-quaternary .badge-value');
+            if (badge) badge.textContent = values.quaternary + '%';
+        }
     };
 
     // Start application when DOM is ready

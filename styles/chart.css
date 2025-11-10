@@ -23,6 +23,69 @@ body {
     padding: 30px;
 }
 
+/* Filters Section */
+.filters-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+    animation: slideInDown 0.5s ease-out;
+}
+
+.filters-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    align-items: end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.filter-select {
+    padding: 12px 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #001B5B;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    font-family: 'Arial', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.filter-select:hover {
+    background: white;
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.filter-select:focus {
+    border-color: white;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+.filter-select option {
+    padding: 10px;
+    background: white;
+    color: #001B5B;
+}
+
 header {
     display: flex;
     justify-content: space-between;
@@ -30,22 +93,82 @@ header {
     margin-bottom: 30px;
     padding-bottom: 20px;
     border-bottom: 3px solid #001B5B;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 h1 {
     font-size: 32px;
     color: #001B5B;
     font-weight: bold;
+    flex: 0 0 auto;
+    order: 1;
 }
 
+/* Badges container */
+.badges-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 0 0 auto;
+    order: 2;
+}
+
+/* Base badge style */
 .percentage-badge {
+    padding: 14px 26px;
+    border-radius: 20px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    min-width: 160px;
+}
+
+.percentage-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.badge-label {
+    font-size: 16px;
+    opacity: 0.9;
+    font-weight: normal;
+    text-align: center;
+}
+
+.badge-value {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* Primary badge - Purple gradient */
+.badge-primary {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 12px 24px;
-    border-radius: 25px;
-    font-size: 20px;
-    font-weight: bold;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Secondary badge - Blue/Teal gradient */
+.badge-secondary {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+}
+
+/* Tertiary badge - Orange/Peach gradient */
+.badge-tertiary {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+}
+
+/* Quaternary badge - Indigo/Cyan gradient */
+.badge-quaternary {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
 }
 
 .chart-container {
@@ -151,8 +274,20 @@ h1 {
     }
 
     .percentage-badge {
-        font-size: 16px;
-        padding: 10px 20px;
+        min-width: 140px;
+        padding: 12px 20px;
+    }
+
+    .badge-label {
+        font-size: 11px;
+    }
+
+    .badge-value {
+        font-size: 20px;
+    }
+
+    .filters-container {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
@@ -165,10 +300,50 @@ h1 {
         padding: 15px;
     }
 
-    header {
-        flex-direction: column;
+    .filters-section {
+        padding: 20px 15px;
+        margin-bottom: 20px;
+    }
+
+    .filters-container {
+        grid-template-columns: 1fr;
         gap: 15px;
+    }
+
+    .filter-label {
+        font-size: 13px;
+    }
+
+    .filter-select {
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+
+    header {
+        gap: 15px;
+    }
+
+    h1 {
+        font-size: 20px;
         text-align: center;
+    }
+
+    .badges-container {
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .percentage-badge {
+        min-width: 120px;
+        padding: 10px 16px;
+    }
+
+    .badge-label {
+        font-size: 10px;
+    }
+
+    .badge-value {
+        font-size: 18px;
     }
 
     .chart-container {
@@ -181,6 +356,17 @@ h1 {
     from {
         opacity: 0;
         transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
     }
     to {
         opacity: 1;
