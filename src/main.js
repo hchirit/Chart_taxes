@@ -8,9 +8,11 @@
 
     // Global variables
     let hierarchyChart = null;
+    let barChart = null;
     let dataTransformer = null;
     let selectedYear = 2025;
     let rawData = null;
+    let activeFilters = { year: 2025 };
 
     /**
      * Initializes the application
@@ -21,6 +23,7 @@
         // Create module instances
         dataTransformer = new DataTransformer();
         hierarchyChart = new HierarchicalChart('hierarchyChart');
+        barChart = new BarChart('barChart');
 
         // Load data
         loadData();
@@ -76,13 +79,25 @@
 
             console.log('Données transformées:', hierarchyData);
 
-            // Display the chart
+            // Display the hierarchical chart
             hierarchyChart.render(hierarchyData);
 
             // Update header badges with calculated statistics
             updateHeaderBadges();
 
-            console.log('Graphique affiché avec succès');
+            // Transform and display bar chart
+            const barChartData = dataTransformer.transformToBarChart(rawData, activeFilters);
+            console.log('Données bar chart:', barChartData);
+
+            barChart.render(barChartData);
+
+            // Update bar chart badges
+            updateBarChartBadges(barChartData);
+
+            // Update bar chart title with current year
+            updateBarChartTitle();
+
+            console.log('Graphiques affichés avec succès');
 
         } catch (error) {
             console.error('Erreur lors du rendu du graphique:', error);
@@ -133,14 +148,54 @@
     }
 
     /**
+     * Updates the bar chart badges with dynamic data
+     */
+    function updateBarChartBadges(barChartData) {
+        const totalTasksElement = document.getElementById('barTotalTasks');
+        const averagePercentageElement = document.getElementById('barAveragePercentage');
+
+        if (totalTasksElement && barChartData.totalTasks !== undefined) {
+            totalTasksElement.textContent = barChartData.totalTasks.toLocaleString('he-IL');
+        }
+
+        if (averagePercentageElement && barChartData.averagePercentage !== undefined) {
+            averagePercentageElement.textContent = barChartData.averagePercentage + '%';
+        }
+    }
+
+    /**
+     * Updates the bar chart title with the selected year
+     */
+    function updateBarChartTitle() {
+        const titleElement = document.getElementById('barChartTitle');
+        if (titleElement) {
+            titleElement.textContent = `שיעור ביצוע תכנית עבודה ${selectedYear}`;
+        }
+    }
+
+    /**
      * Sets up event listeners
      */
     function setupEventListeners() {
         // Listen for year changes (if you add a filter)
         document.addEventListener('filterSelected', function(event) {
             selectedYear = parseInt(event.detail.year, 10);
+            activeFilters.year = selectedYear;
             console.log('Année sélectionnée:', selectedYear);
+            updateBarChartTitle(); // Update title immediately
             loadData();
+        });
+
+        // Listen for all filters changes
+        document.addEventListener('filtersChanged', function(event) {
+            activeFilters = event.detail.filters;
+            // Update selectedYear if it changed
+            if (activeFilters.year && activeFilters.year !== selectedYear) {
+                selectedYear = activeFilters.year;
+                updateBarChartTitle();
+            }
+            console.log('Filtres actifs:', activeFilters);
+            renderChart();
         });
 
         // Listen for window resize
@@ -148,7 +203,7 @@
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(function() {
-                if (hierarchyChart) {
+                if (hierarchyChart && barChart) {
                     renderChart();
                 }
             }, 250);

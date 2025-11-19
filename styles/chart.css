@@ -399,3 +399,125 @@ h1 {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* Bar Chart Section */
+.chart-section {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid #e1e4e8;
+}
+
+/* Chart Title (for bar chart) */
+.chart-title {
+    font-size: 28px;
+    color: #001B5B;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4479ba;
+}
+
+/* Bar Chart Badges Container */
+.bar-chart-badges {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 30px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+/* Base Bar Badge Style */
+.bar-badge {
+    flex: 1;
+    min-width: 280px;
+    padding: 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.bar-badge:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Left Badge - Total Tasks */
+.bar-badge-left {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+/* Right Badge - Average Percentage */
+.bar-badge-right {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+}
+
+/* Bar Badge Label */
+.bar-badge-label {
+    font-size: 16px;
+    font-weight: 600;
+    opacity: 0.95;
+    text-align: center;
+    letter-spacing: 0.3px;
+}
+
+/* Bar Badge Value */
+.bar-badge-value {
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Bar Badge Note */
+.bar-badge-note {
+    font-size: 12px;
+    opacity: 0.85;
+    font-style: italic;
+    text-align: center;
+}
+
+/* Responsive for Bar Chart */
+@media (max-width: 768px) {
+    .chart-section {
+        margin-top: 30px;
+        padding-top: 20px;
+    }
+
+    .chart-title {
+        font-size: 20px;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+    }
+
+    .bar-chart-badges {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .bar-badge {
+        min-width: 100%;
+        padding: 18px 24px;
+    }
+
+    .bar-badge-label {
+        font-size: 14px;
+    }
+
+    .bar-badge-value {
+        font-size: 28px;
+    }
+
+    .bar-badge-note {
+        font-size: 11px;
+    }
+}

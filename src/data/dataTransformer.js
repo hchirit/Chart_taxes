@@ -401,6 +401,92 @@ class DataTransformer {
             return itemYear === year;
         });
     }
+
+    /**
+     * Transforms raw data for bar chart
+     * @param {Array} rawData - Raw data
+     * @param {Object} filters - Active filters (year, obs, etc.)
+     * @returns {Object} - Data structure for bar chart
+     */
+    transformToBarChart(rawData, filters = {}) {
+        // For now, use mock data as requested
+        // In future, this will process rawData based on filters
+
+        // Define color palette for different units
+        const colors = [
+            '#E8F5E9', // Very light green
+            '#C8E6C9', // Light green
+            '#A5D6A7', // Green
+            '#81C784', // Medium green
+            '#66BB6A', // Darker green
+            '#1565C0', // Dark blue
+            '#212121', // Black
+            '#616161', // Dark gray
+            '#B39DDB', // Light purple
+            '#9575CD', // Medium purple
+            '#7E57C2', // Darker purple
+            '#5E35B1', // Dark purple
+            '#FFB3BA', // Light pink
+            '#FF8A80', // Light red
+            '#EF5350', // Red
+            '#E57373', // Pink
+            '#81D4FA', // Light blue
+            '#4FC3F7', // Sky blue
+            '#29B6F6', // Blue
+            '#FFC1CC'  // Light pink
+        ];
+
+        // Mock data based on the image
+        const units = [
+            { name: 'ביקורת פנים', taskCount: 1, percentage: null, color: colors[0] },
+            { name: 'נע"ם', taskCount: 6, percentage: null, color: colors[1] },
+            { name: 'זיהובת', taskCount: 10, percentage: 100, color: colors[2] },
+            { name: 'הרשאות', taskCount: 10, percentage: 100, color: colors[3] },
+            { name: 'חשבונת', taskCount: 10, percentage: null, color: colors[4] },
+            { name: 'מס הכנסה', taskCount: 18, percentage: null, color: colors[5] },
+            { name: 'מימי מקרקעין', taskCount: 21, percentage: 61, color: colors[6] },
+            { name: 'ייעוץ משפטי, רש, נכסים וליגיסטיקה', taskCount: 23, percentage: 68, color: colors[7] },
+            { name: 'תכנון', taskCount: 35, percentage: 25, color: colors[8] },
+            { name: 'מקצועות חשבונת וניהול סיכונים', taskCount: 35, percentage: null, color: colors[9] },
+            { name: 'מקצועות', taskCount: 39, percentage: 72, color: colors[10] },
+            { name: 'בתי המכס', taskCount: 63, percentage: 70, color: colors[11] },
+            { name: 'תכנון וכלכלה', taskCount: 101, percentage: null, color: colors[12] },
+            { name: 'חקירות ומודיעין', taskCount: 110, percentage: 74, color: colors[13] },
+            { name: 'שירות לקוחות', taskCount: 124, percentage: null, color: colors[14] },
+            { name: 'ניהול המנ האנושי', taskCount: 159, percentage: 86, color: colors[15] },
+            { name: 'איכפ הגבירה', taskCount: 176, percentage: 86, color: colors[16] },
+            { name: 'שומה וביקורת', taskCount: 202, percentage: 85, color: colors[17] },
+            { name: 'מיילזג המכס', taskCount: 219, percentage: 78, color: colors[18] },
+            { name: null, taskCount: null, percentage: 74, color: colors[19] }, // Extra percentage
+            { name: null, taskCount: null, percentage: 81, color: colors[19] }, // Extra percentage
+            { name: null, taskCount: null, percentage: 89, color: colors[19] }, // Extra percentage
+            { name: null, taskCount: null, percentage: 87, color: colors[19] }  // Extra percentage
+        ];
+
+        // Filter out null entries for display
+        const displayUnits = units.filter(unit => unit.name !== null);
+
+        // Calculate statistics
+        const totalTasks = displayUnits.reduce((sum, unit) => sum + unit.taskCount, 0);
+        const percentagesArray = displayUnits
+            .map(unit => unit.percentage)
+            .filter(p => p !== null);
+        const globalAverage = percentagesArray.length > 0
+            ? percentagesArray.reduce((sum, p) => sum + p, 0) / percentagesArray.length
+            : 0;
+
+        // For Y-axis, the average line should be positioned based on task count
+        // We'll use a proportional value
+        const maxTaskCount = Math.max(...displayUnits.map(u => u.taskCount));
+        const averageLinePosition = (globalAverage / 100) * maxTaskCount * 0.9; // 90% of max for visual balance
+
+        return {
+            units: displayUnits,
+            globalAverage: averageLinePosition,
+            totalTasks: totalTasks,
+            averagePercentage: Math.round(globalAverage)
+        };
+    }
 }
 
 // Export for use in other modules

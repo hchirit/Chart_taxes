@@ -78,6 +78,27 @@
         <div class="chart-container">
             <canvas id="hierarchyChart"></canvas>
         </div>
+
+        <!-- Bar Chart Section -->
+        <div class="chart-section">
+            <h2 class="chart-title" id="barChartTitle">שיעור ביצוע תכנית עבודה 2025</h2>
+            <div class="chart-container" style="height: 500px;">
+                <canvas id="barChart"></canvas>
+            </div>
+
+            <!-- Bar Chart Badges -->
+            <div class="bar-chart-badges">
+                <div class="bar-badge bar-badge-left">
+                    <div class="bar-badge-label">סך משימות</div>
+                    <div class="bar-badge-value" id="barTotalTasks">1,362</div>
+                    <div class="bar-badge-note">*לא משימות מבוטלות</div>
+                </div>
+                <div class="bar-badge bar-badge-right">
+                    <div class="bar-badge-label">ממוצע שיעור הביצוע:</div>
+                    <div class="bar-badge-value" id="barAveragePercentage">78%</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Chart.js library -->
@@ -104,6 +125,7 @@
     <script src="src/utils/chartConfig.js"></script>
     <script src="src/data/dataTransformer.js"></script>
     <script src="src/charts/hierarchicalChart.js"></script>
+    <script src="src/charts/barChart.js"></script>
     <script src="src/main.js"></script>
 </body>
 </html>
